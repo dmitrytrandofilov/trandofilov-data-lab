@@ -22,8 +22,9 @@ CREATE TABLE bookings (
 	hotel_id	INT	NOT NULL REFERENCES hotels(id) ON DELETE CASCADE,
 	customer_id	INT	NOT NULL REFERENCES customers(id) ON DELETE CASCADE,
 	check_in	DATE	NOT NULL,
-	check_out	DATE	NOT NULL CHECK (check_out > check_in),
-	total_price	NUMERIC(10,2)	NOT NULL CHECK (total_price > 0)
+	check_out	DATE	NOT NULL,
+	total_price	NUMERIC(10,2)	NOT NULL CHECK (total_price > 0),
+	CONSTRAINT chk_dates CHECK (check_out > check_in)
 );
 
 INSERT INTO hotels (name, location, rating, rooms) VALUES
@@ -54,3 +55,4 @@ BEGIN;
 DELETE FROM hotels WHERE id = 1;
 SELECT COUNT(*) AS bookings_after_delete FROM bookings;
 ROLLBACK;
+
