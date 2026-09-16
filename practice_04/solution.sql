@@ -88,7 +88,7 @@ group by
 	customer_id
 having 
 	count(*) > 1
-order by qqq
+order by
 	customer_id;
 -- Завдання 3.4
 select
@@ -103,7 +103,7 @@ having
 	count(distinct region) > 1
 order by 
 	customer_id;
--- Завдання 3.5qqqqqqqqqqqqqqqqqqqqqqqq
+-- Завдання 3.5
 select
   region,
   round(avg(total_amount),2) as avg_amount,
@@ -230,17 +230,17 @@ where
 order by 
 	id;
 -- Завдання 5.5
-select
-  event_name,
-  case to_char(start_date,'id')
-    when '1' then 'Понеділок'
-    when '2' then 'Вівторок'
-    when '3' then 'Середа'
-    when '4' then 'Четвер'
-    when '5' then 'П''ятниця'
-    when '6' then 'Субота'
-    when '7' then 'Неділя'
-  end as weekday
+select 
+    event_name,
+    case extract(dow from start_date)
+        when 0 then 'Неділя'
+        when 1 then 'Понеділок'
+        when 2 then 'Вівторок'
+        when 3 then 'Середа'
+        when 4 then 'Четвер'
+        when 5 then 'П''ятниця'
+        when 6 then 'Субота'
+    end as weekday
 from 
 	events
 order by 
@@ -265,14 +265,14 @@ from
 order by 
 	id;
 -- Завдання 6.1
-select
-  name,
-  case
-    when email is not null and phone is not null then email || ', ' || phone
-    when email is not null then email
-    when phone is not null then phone
-    else ''
-  end as contact_status
+select 
+    name,
+    case 
+        when email is not null and phone is not null then 'Є обидва'
+        when email is not null and phone is null then 'Є email'
+        when email is null and phone is not null then 'Є телефон'
+        else 'Контактні дані відсутні'
+    end as contact_status
 from 
 	customer_data
 order by 
@@ -322,10 +322,10 @@ select
 from 
 	customer_data;
 -- Завдання 7.1
-select
-  name,
-  attributes ->> 'model' as brand,
-  coalesce(attributes #>> '{specs,memory,ram}','Не вказано') as ram
+select 
+    name,
+    attributes ->> 'brand' as brand,
+    coalesce(attributes #>> '{specs,memory,ram}', 'Не вказано') as ram
 from 
 	product_catalog
 order by 
